@@ -1,0 +1,23 @@
+mean = [3,5]
+cov = [[12,3],[3,1]]
+X = np.random.multivariate_normal(mean,cov,1000)
+
+X_0 = (X - mean) / np.diag(cov)
+
+cov_0 = np.cov(X_0, rowvar=False)
+w, v = np.linalg.eig(cov_0) #w - wartości własne, v - wektory własne, Av[:,i] = w[i]v[:,w]
+
+if(w[0]<w[1]):
+    w[0],w[1] = w[1],w[0]
+    v[:,[0,1]] = v[:,[1,0]]
+
+X_pc = np.dot(np.dot(X,v),np.sqrt(np.diag(1/w)))
+X_pc_ohne_Lambdas = np.dot(X,v)
+
+X_cov = np.cov(X.T)
+
+Xa = np.dot(X_pc, X_cov)
+Xa = np.dot(Xa,np.sqrt(np.diag(1/w)))
+plt.figure()
+plt.plot(Xa[:,0],Xa[:,1],'r.')
+plt.show()
